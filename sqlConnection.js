@@ -42,7 +42,7 @@ module.exports = class SqlConnection{
         if (err) {
           return rej(err)
         }
-        this.connection.close();
+        // this.connection.close();
       });
     
       const result = [];
@@ -57,6 +57,23 @@ module.exports = class SqlConnection{
       request.on('doneInProc', (rowCount, more) => {
         console.log(rowCount + ' rows returned');
         return res(result)
+      });
+    
+      this.connection.execSql(request);
+    })
+  }
+
+  async post(query) {
+    return new Promise((res, rej) => {
+      const request = new Request(query, (err, rowCount) => {
+        if (err) {
+          return rej(err)
+        }
+        // this.connection.close();
+      });
+    
+      request.on('doneInProc', () => {
+        return res("ok")
       });
     
       this.connection.execSql(request);
