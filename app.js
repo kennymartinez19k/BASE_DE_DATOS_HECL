@@ -1,7 +1,5 @@
 const express = require('express')
 const bodyParser = require('body-parser')
-const Connection = require('tedious').Connection  // Cocnetamos el server con tedious utilizando docker ya que nos presento un error a la hora de utilizar el tcp/ip de nuestra maquina
-var Request = require('tedious').Request;
 const port = 3000
 const SqlConnection  = require("./sqlConnection")
 const router = express.Router();

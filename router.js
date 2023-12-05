@@ -1,15 +1,12 @@
-var Request = require('tedious').Request;
 
 module.exports = function (app, sqlConnection) {
 
-    // Ruta para conseguir listado de cursos
     app.get('/clase', async (req, res) => {
       let query = `SELECT * FROM Clase;`
       let result = await sqlConnection.get(query)
       return res.json({ result})
     })
 
-    // Ruta para matricular a un usuario
     app.post('/clase', async (req, res) => {
       // TODO: Validar que el horario de una seccion de un estudiante no choquen con otra seccion que tenga el mismo
       let {estudiante_id, seccion_id, horas_cursadas} = req.body
@@ -49,7 +46,7 @@ module.exports = function (app, sqlConnection) {
       return res.json({ result})
     })
     
-    // Ruta para conseguir a un usuario
+    // Ruta para conseguir a un estudiante
 
     app.get('/estudiantes', async (req, res) => {
       let query = `SELECT * FROM Estudiante;`
@@ -69,5 +66,8 @@ module.exports = function (app, sqlConnection) {
       return res.json({ result})
     })
 }
+
+
+
 
 

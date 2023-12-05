@@ -1,4 +1,4 @@
-const Connection = require('tedious').Connection  // Cocnetamos el server con tedious utilizando docker ya que nos presento un error a la hora de utilizar el tcp/ip de nuestra maquina
+const Connection = require('tedious').Connection 
 var Request = require('tedious').Request;
 
 module.exports = class SqlConnection{
@@ -14,10 +14,8 @@ module.exports = class SqlConnection{
         }
       },
       options: {
-        // port: 1433, // Puerto predeterminado de SQL Server
-        database: 'HECL_LANGUAGE_INSTITUTE', // Cambia al nombre de tu base de datos
-        trustServerCertificate: true // Opciones adicionales,
-        
+        database: 'HECL_LANGUAGE_INSTITUTE',
+        trustServerCertificate: true 
       }
     }
     this.connection = new Connection(config);
