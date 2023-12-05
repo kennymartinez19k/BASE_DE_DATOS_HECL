@@ -29,3 +29,20 @@ CREATE TABLE sesiones (
     sesion_numero INT,
 	FOREIGN KEY (id_curso) REFERENCES cursos(id)
 );
+
+CREATE TABLE materias (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    id_profesor INT,
+    sesion_numero INT,
+	FOREIGN KEY (id_profesor) REFERENCES profesores(id)
+);
+
+
+CREATE TABLE profesores (
+    id int primary key NOT NULL,
+    nombre varchar(100),
+	apellido varchar(100),
+    telefono int,
+    email varchar(100),
+    direccion varchar(100),
+);
