@@ -1,22 +1,22 @@
 const express = require('express')
 const bodyParser = require('body-parser')
-
 const Connection = require('tedious').Connection  // Cocnetamos el server con tedious utilizando docker ya que nos presento un error a la hora de utilizar el tcp/ip de nuestra maquina
 var Request = require('tedious').Request;
+const port = 3000
 
 const config = {
-  server: "localhost",
+  server: "DESKTOP-DK2KB4G",
   authentication: {
     type: "default",
     options: {
-      userName: 'grupo2',
+      userName: 'sa',
       password: "123456"
     }
   },
   options: {
-    port: 1435, // Docker esta ejecutando el puerto 1433 pero esta sirviendonos en el puerto 1435
-    database: 'HECL_LANG_INSTITUTE',
-    trustServerCertificate: true
+    port: 1433, // Puerto predeterminado de SQL Server
+    database: 'HECL_LANG_INSTITUTE', // Cambia al nombre de tu base de datos
+    trustServerCertificate: true // Opciones adicionales
   }
 }
 
@@ -85,77 +85,20 @@ app.post('/usuario', (req, res) => {
 app.post('/auditoria-academica', (req, res) => {
   const { matricula } = req.body
   const request = new Request(
-    `INSERT INTO usuario (nombre, apellido, telefono, email, direccion, dia_nacimiento, mes_nacimiento, ano_nacimiento, matricula, curso_deseado) 
-     VALUES ('${nombre}', '${apellido}', '${telefono}', '${email}', '${direccion}', '${dia_nacimiento}', '${mes_nacimiento}', '${ano_nacimiento}', ${matricula}  ${curso_deseado})`,
+    `SELECT * FROM usuarios WHERE matricula = 'x' LIMIT 1`,
     function (err, rowCount) {
       if (err) {
         console.error('Error executing SQL statement:', err.message);
         return res.json({ message: err.message })
       } else {
         let result ={ nombre, apellido, telefono, email, direccion, dia_nacimiento, mes_nacimiento, ano_nacimiento, matricula}
+        `SELECT cursos.id, cursos.nombre, sesiones.sesion_numero, sesiones.descripcion FROM cursos
+         LEFT JOIN sesiones ON cursos.id = sesiones.id_curso
+         WHERE cursos.id = 1;`
         return res.json({ message: 'Bienvenido a HECL Institute.', result }) 
       }
     }
   );
-  connection.execSql(request);
-})
-
-// Ruta para actualizar un cliente
-app.put('/clientes/:telefono', (req, res) => {
-  const { telefono } = req.params
-  const { nombre } = req.body
-
-  console.log(telefono, nombre)
-  
-  const request = new Request(
-    `
-    update clientes set nombre = '${nombre}' where telefono = '${telefono}'`,
-    function (err, rowCount) {
-      if (err) {
-        console.error('Error executing SQL statement:', err.message);
-        return res.json({ message: err.message })
-      } else {
-        return res.json({ message: 'Cliente Actualizado con exito.' }) 
-      }
-    }
-  );
-  connection.execSql(request);
-})
-// Ruta para eliminar un cliente
-app.delete('/clientes/:telefono', (req, res) => {
-  const { telefono } = req.params
-  const request = new Request(
-    `delete from clientes where telefono = '${telefono}'`,
-    function (err, rowCount) {
-      if (err) {
-        console.error('Error executing SQL statement:', err.message);
-        return res.json({ message: err.message })
-      } else {
-        return res.json({ message: 'Cliente eliminado con exito.' }) 
-      }
-    }
-  );
-  connection.execSql(request);
-})
-
-
-// Ruta para mostrar los precios de los servicios
-app.get('/precios', (req, res) => {
-  const sql = 'SELECT precio FROM tipos_servicio, tipos_prenda, precios WHERE precios.tipo_prenda_id = tipos_prenda.id AND precios.tipo_servicio_id = tipos_servicio.id'
-  let request = new Request(sql, (err, result) => {
-    if (err) {
-      console.error(err)
-      return res.status(500).json({ message: 'Error al obtener los precios.' })
-    }
-
-    return res.json(result)
-  })
-
-  request.on('row', function(columns) {
-    columns.forEach(function(column) {
-      console.log(column.value);
-    });
-  });
   connection.execSql(request);
 })
 
